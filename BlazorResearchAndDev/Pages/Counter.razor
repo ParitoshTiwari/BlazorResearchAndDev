@@ -1,0 +1,111 @@
+﻿@page "/counter"
+@using Blazorise.DataGrid;
+
+<DataGrid TItem="List<Test>"
+          Data=@this.tested
+          Editable
+          Responsive
+          ShowPager
+          CommandMode="DataGridCommandMode.ButtonRow"
+          SelectedRowChanged="@((item) => this.CallTrigger(item))"
+          EditMode="DataGridEditMode.Inline">
+    <DataGridColumns>
+        <DataGridColumn TItem="List<Test>" Caption="TestA" Editable="true">
+            <DisplayTemplate>
+                @{ 
+                    var a = (context as List<Test>).FirstOrDefault().TestA;
+                    @($"{a}")
+                }
+            </DisplayTemplate>
+        </DataGridColumn>
+        <DataGridColumn TItem="List<Test>" Caption="TestB" Editable="true">
+            <DisplayTemplate>
+                @{
+                    var a = (context as List<Test>).FirstOrDefault().TestB;
+                    @($"{a}")
+                }
+            </DisplayTemplate>
+        </DataGridColumn>
+        <DataGridColumn TItem="List<Test>" Caption="TestC" Editable="true">
+            <DisplayTemplate>
+                @{
+                    var a = (context as List<Test>).FirstOrDefault().TestC;
+                    @($"{a}")
+                }
+            </DisplayTemplate>
+        </DataGridColumn>
+    </DataGridColumns>
+    <DetailRowTemplate>
+        @{ 
+            var aka = (context as List<Test>).ToList();
+            <DataGrid TItem="Test"
+                      Data="aka"
+                      Responsive="true">
+                <DataGridColumns>
+                    <DataGridColumn TItem="Test" Field="@nameof(Test.TestA)" Caption="TestA">
+                    </DataGridColumn>
+                    <DataGridColumn TItem="Test" Field="@nameof(Test.TestB)" Caption="TestB">
+                    </DataGridColumn>
+                    <DataGridColumn TItem="Test" Field="@nameof(Test.TestC)" Caption="TestC">
+                    </DataGridColumn>
+                </DataGridColumns>
+            </DataGrid>
+        }
+    </DetailRowTemplate>
+</DataGrid>
+
+@code {
+
+
+    public List<List<Test>> tested = new List<List<Test>>();
+    public class Test
+    {
+        public string TestA { get; set; }
+        public string TestB { get; set; }
+        public string TestC { get; set; }
+    }
+
+    public Test testing = new Test();
+
+    public async Task CallTrigger(List<Test> test)
+    {
+        testing = test.FirstOrDefault();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+
+        tested.Add(new List<Test>
+        {
+            new Test
+            {
+                TestA = "5",
+                TestB = "6",
+                TestC = "7"
+            },
+            new Test
+            {
+                TestA = "8",
+                TestB = "9",
+                TestC = "10"
+            }
+        });
+        tested.Add(new List<Test>
+        {
+            new Test
+            {
+                TestA = "11",
+                TestB = "12",
+                TestC = "13"
+            },
+            new Test
+            {
+                TestA = "14",
+                TestB = "15",
+                TestC = "16"
+            }
+        });
+
+        return base.OnInitializedAsync();
+    }
+}

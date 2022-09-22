@@ -1,0 +1,100 @@
+﻿@page "/DataGridCheck"
+@using Blazorise.DataGrid;
+
+<Row>
+    <Column Class="TestCss">
+        <DataGrid TItem="Test"
+                  Data="tset"
+                  Editable
+                  Responsive
+                  ShowPager
+                  CommandMode="DataGridCommandMode.ButtonRow"
+                  EditMode="DataGridEditMode.Inline"
+                  Virtualize = "true"
+                  HeaderThemeContrast = "ThemeContrast.Dark"
+                  VirtualizeOptions = "@(new(){ DataGridHeight = "618px", DataGridMaxHeight = "700px"})"
+                  @bind-SelectedRow="@selectedTest">
+            <DataGridColumns>
+                <DataGridCommandColumn TItem="Test" NewCommandAllowed="false" EditCommandAllowed="false" DeleteCommandAllowed="false">
+                    <SaveCommandTemplate>
+                        <Button ElementId="btnSave" Type="ButtonType.Submit" PreventDefaultOnSubmit Color="Color.Primary" Clicked="@context.Clicked">@context.LocalizationString</Button>
+                    </SaveCommandTemplate>
+                    <CancelCommandTemplate>
+                        <Button ElementId="btnCancel" Color="Color.Secondary" Clicked="@context.Clicked">@context.LocalizationString</Button>
+                    </CancelCommandTemplate>
+                </DataGridCommandColumn>
+                <DataGridColumn TItem="Test" Field="@nameof(Test.TestA)" Caption="TestA" Editable="true">
+                </DataGridColumn>
+                <DataGridColumn TItem="Test" Field="@nameof(Test.TestB)" Caption="TestB" Editable="true">
+                </DataGridColumn>
+                <DataGridColumn TItem="Test" Field="@nameof(Test.TestC)" Caption="TestC" Editable="true">
+                </DataGridColumn>
+            </DataGridColumns>
+            <ButtonRowTemplate>
+                <Button Color="Color.Success" Clicked="context.NewCommand.Clicked">New</Button>
+                <Button Color="Color.Primary" Disabled="(selectedTest is null)" Clicked="context.EditCommand.Clicked">Edit</Button>
+                <Button Color="Color.Danger" Disabled="(selectedTest is null)" Clicked="context.DeleteCommand.Clicked">Delete</Button>
+                <Button Color="Color.Link" Clicked="context.ClearFilterCommand.Clicked">Clear Filter</Button>
+            </ButtonRowTemplate>
+        </DataGrid>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <FileEdit Changed="OnChangedAsync"></FileEdit>
+    </Column>
+    <Column>
+        <Label>Test</Label>
+    </Column>
+</Row>
+
+@code {
+
+    public List<Test> tset = new List<Test>();
+    private Test selectedTest;
+    public class Test
+    {
+        public string TestA { get; set; }
+        public string TestB { get; set; }
+        public string TestC { get; set; }
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        tset.Add(new Test
+            {
+                TestA = "1",
+                TestB = "2",
+                TestC = "3"
+            });
+        tset.Add(new Test
+            {
+                TestA = "4",
+                TestB = "5",
+                TestC = "6"
+            });
+        tset.Add(new Test
+            {
+                TestA = "7",
+                TestB = "8",
+                TestC = "9"
+            });
+
+        return base.OnInitializedAsync();
+    }
+
+    public DataGridRowStyling HeaderStyling()
+    {
+        var dgs = new DataGridRowStyling
+            {
+                Style = "position: sticky;top: 0;z-index: 10;overflow: auto;background-color: #6495ED;top: -1px;"
+            };
+
+        return dgs;
+    }
+
+    public async Task OnChangedAsync(FileChangedEventArgs e)
+    {
+        
+    }
+}
